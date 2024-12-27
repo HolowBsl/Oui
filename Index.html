@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculatrice de Commandes</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #121212;
+      color: #e0e0e0;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 50px;
+    }
+
+    .calculator, .storage {
+      background-color: #1e1e1e;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 600px;
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #f5f5f5;
+    }
+
+    label {
+      font-weight: bold;
+      color: #ddd;
+      margin-bottom: 8px;
+    }
+
+    select, input, button {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #555;
+      border-radius: 5px;
+      font-size: 16px;
+      background-color: #333;
+      color: #e0e0e0;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: space-between;
+    }
+
+    .order-list, .result {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      background-color: #232323;
+      border: 1px solid #444;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #555;
+    }
+
+    th {
+      background-color: #333;
+      color: #f5f5f5;
+    }
+
+    td {
+      color: #e0e0e0;
+    }
+
+    .result p {
+      font-size: 18px;
+      color: #f5f5f5;
+    }
+
+    .summary {
+      margin-top: 10px;
+      font-size: 16px;
+      color: #f5f5f5;
+    }
+
+    .summary strong {
+      color: #007bff;
+    }
+
+    .reset-btn {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .reset-btn:hover {
+      background-color: #c82333;
+    }
+
+    .storage-list {
+      margin-top: 20px;
+    }
+
+    .storage-item {
+      padding: 10px;
+      margin-bottom: 10px;
+      background-color: #333;
+      border-radius: 5px;
+      border: 1px solid #555;
+    }
+
+    .pay-btn {
+      background-color: #28a745;
+    }
+
+    .pay-btn:hover {
+      background-color: #218838;
+    }
+
+    .storage {
+      max-width: 350px;
+      position: sticky;
+      top: 50px;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="calculator">
+      <h1>Calculatrice de Commandes</h1>
+
+      <label for="enterprise">Choisissez l'entreprise :</label>
+      <select id="enterprise">
+        <option value="LSPD">LSPD</option>
+        <option value="BCSO">BCSO</option>
+        <option value="SASP">SASP</option>
+      </select>
+
+      <label for="item">Choisissez la fabrication :</label>
+      <select id="item">
+        <option value="Mitraillette">Mitraillette</option>
+        <option value="P90">P90</option>
+        <option value="MKII">MKII</option>
+        <option value="Revolver">Revolver</option>
+        <option value="Remington">Remington</option>
+        <option value="Lampe Torche">Lampe Torche</option>
+        <option value="Matraque">Matraque</option>
+        <option value="Munition ,357">Munition ,357</option>
+        <option value="Munition 9*9 AP">Munition 9*9 AP</option>
+        <option value="Munition 5,7*28">Munition 5,7*28</option>
+        <option value="Non létal">Non létal</option>
+        <option value="Cône">Cône</option>
+        <option value="Menotte">Menotte</option>
+        <option value="Clé">Clé</option>
+        <option value="Pinces">Pinces</option>
+        <option value="Herses">Herses</option>
+        <option value="Plaque Balistique">Plaque Balistique</option>
+        <option value="Panneau de vitesse">Panneau de vitesse</option>
+      </select>
+
+      <label for="quantity">Quantité :</label>
+      <input type="number" id="quantity" min="1" placeholder="Entrez une quantité" />
+
+      <div class="buttons">
+        <button onclick="addItem()">Ajouter à la commande</button>
+        <button class="reset-btn" onclick="resetOrder()">Réinitialiser</button>
+      </div>
+
+      <div class="order-list" id="order-list">
+        <h2>Commande actuelle</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Fabrication</th>
+              <th>Quantité</th>
+              <th>Lingots Aluminium</th>
+              <th>Lingots Fer</th>
+              <th>Lingots Acier</th>
+            </tr>
+          </thead>
+          <tbody id="order-table"></tbody>
+        </table>
+      </div>
+
+      <div class="total-lingots" id="total-lingots">
+        <h3>Matériaux Nécessaire</h3>
+        <p id="total-alu">Aluminium: 0</p>
+        <p id="total-fer">Fer: 0</p>
+        <p id="total-acier">Acier: 0</p>
+      </div>
+
+      <button onclick="calculateTotal()">Calculer le total</button>
+
+      <div class="result" id="result">
+        <p>Les totaux apparaîtront ici.</p>
+      </div>
+    </div>
+
+    <div class="storage">
+      <h2>Historique des commandes</h2>
+      <div class="storage-list" id="storage-list">
+        <!-- Les commandes stockées seront affichées ici -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const recipes = {
+      "Mitraillette": { alu: 3, fer: 2, acier: 3, price: 5000 },
+      "P90": { alu: 2, fer: 3, acier: 3, price: 5000 },
+      "MKII": { alu: 2, fer: 0, acier: 2, price: 3500 },
+      "Revolver": { alu: 0, fer: 2, acier: 2, price: 3000 },
+      "Remington": { alu: 0, fer: 2, acier: 2, price: 3000 },
+      "Lampe Torche": { alu: 1, fer: 0, acier: 0, price: 500 },
+      "Matraque": { alu: 0, fer: 1, acier: 0, price: 250 },
+      "Munition ,357": { alu: 0, fer: 0.1, acier: 0, price: 50 },
+      "Munition 9*9 AP": { alu: 0, fer: 0.1, acier: 0, price: 50 },
+      "Munition 5,7*28": { alu: 0, fer: 0.1, acier: 0, price: 50 },
+      "Non létal": { alu: 0.1, fer: 0, acier: 0, price: 50 },
+      "Cône": { alu: 1, fer: 0, acier: 0, price: 80 },
+      "Menotte": { alu: 0.4, fer: 0, acier: 0, price: 50 },
+      "Clé": { alu: 0, fer: 0, acier: 0.2, price: 50 },
+      "Pinces": { alu: 1, fer: 0, acier: 0, price: 50 },
+      "Herses": { alu: 0, fer: 1, acier: 0, price: 80 },
+      "Plaque Balistique": { alu: 0.4, fer: 0, acier: 1, price: 475 },
+      "Panneau de vitesse": { alu: 0, fer: 0, acier: 0.5, price: 250 },
+    };
+
+    let order = [];
+    let historicalOrders = {};
+
+    function addItem() {
+      const item = document.getElementById("item").value;
+      const quantity = parseFloat(document.getElementById("quantity").value);
+      const enterprise = document.getElementById("enterprise").value;
+
+      if (!quantity || quantity <= 0) {
+        alert("Veuillez entrer une quantité valide.");
+        return;
+      }
+
+      const recipe = recipes[item];
+      const totalAlu = recipe.alu * quantity;
+      const totalFer = recipe.fer * quantity;
+      const totalAcier = recipe.acier * quantity;
+
+      order.push({ item, quantity, totalAlu, totalFer, totalAcier, price: recipe.price * quantity, enterprise });
+      updateOrderTable();
+    }
+
+    function updateOrderTable() {
+      const table = document.getElementById("order-table");
+      table.innerHTML = "";
+      order.forEach((entry) => {
+        table.innerHTML += `
+          <tr>
+            <td>${entry.item}</td>
+            <td>${entry.quantity}</td>
+            <td>${entry.totalAlu}</td>
+            <td>${entry.totalFer}</td>
+            <td>${entry.totalAcier}</td>
+          </tr>
+        `;
+      });
+      updateTotalLingots();
+    }
+
+    function updateTotalLingots() {
+      let totalAlu = 0;
+      let totalFer = 0;
+      let totalAcier = 0;
+
+      order.forEach((entry) => {
+        totalAlu += entry.totalAlu;
+        totalFer += entry.totalFer;
+        totalAcier += entry.totalAcier;
+      });
+
+      document.getElementById("total-alu").innerText = `Aluminium: ${totalAlu}`;
+      document.getElementById("total-fer").innerText = `Fer: ${totalFer}`;
+      document.getElementById("total-acier").innerText = `Acier: ${totalAcier}`;
+    }
+
+    function calculateTotal() {
+      const enterprise = document.getElementById("enterprise").value;
+      let totalPrice = 0;
+
+      const recap = order.map((entry) => {
+        totalPrice += entry.price;
+        return `${entry.quantity} ${entry.item}`;
+      }).join(", ");
+
+      const roundedTotal = Math.ceil(totalPrice / 1000) * 1000;
+
+      document.getElementById("result").innerHTML = `
+        <h2>Résumé de la commande</h2>
+        <p class="summary"><strong>${enterprise} :</strong> ${recap}</p>
+        <p><strong>Total :</strong> $${roundedTotal.toLocaleString()}</p>
+      `;
+
+      storeOrder(enterprise, recap, roundedTotal);
+    }
+
+    function storeOrder(enterprise, recap, total) {
+      if (!historicalOrders[enterprise]) {
+        historicalOrders[enterprise] = { items: [], total: 0 };
+      }
+
+      historicalOrders[enterprise].items.push(recap);
+      historicalOrders[enterprise].total += total;
+
+      let storageItem = document.getElementById(enterprise);
+      if (!storageItem) {
+        storageItem = document.createElement("div");
+        storageItem.id = enterprise;
+        storageItem.classList.add("storage-item");
+        document.getElementById("storage-list").appendChild(storageItem);
+      }
+
+      storageItem.innerHTML = `
+        <h3>${enterprise}</h3>
+        <p>${historicalOrders[enterprise].items.join(", ")}</p>
+        <p><strong>Total: </strong>$${historicalOrders[enterprise].total.toLocaleString()}</p>
+        <button class="pay-btn" onclick="payOrder(this)">PAYÉ</button>
+      `;
+    }
+
+    function payOrder(button) {
+      button.parentElement.remove();
+      const enterprise = button.parentElement.querySelector("h3").innerText;
+      historicalOrders[enterprise] = { items: [], total: 0 }; // Reset the historical order for that enterprise
+    }
+
+    function resetOrder() {
+      order = [];
+      updateOrderTable();
+      document.getElementById("result").innerHTML = `<p>Les totaux apparaîtront ici.</p>`;
+      document.getElementById("total-alu").innerText = "Aluminium: 0";
+      document.getElementById("total-fer").innerText = "Fer: 0";
+      document.getElementById("total-acier").innerText = "Acier: 0";
+    }
+  </script>
+</body>
+</html>
+
